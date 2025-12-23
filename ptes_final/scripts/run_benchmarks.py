@@ -1,3 +1,5 @@
+"""运行论文复现/基线，输出 RTE 与备注（中文说明）。"""
+ 
 from pathlib import Path
 import sys
 

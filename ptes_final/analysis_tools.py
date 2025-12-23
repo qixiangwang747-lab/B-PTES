@@ -1,4 +1,4 @@
-"""Scanning, sensitivity, and Pareto utilities with no external dependencies."""
+"""组合扫描、敏感性分析与 Pareto 筛选工具（仅依赖标准库）。"""
 from __future__ import annotations
 
 from dataclasses import asdict
@@ -17,7 +17,7 @@ from .core import (
 
 
 class SimpleFrame:
-    """Minimal stand-in for pandas DataFrame."""
+    """简易版“DataFrame”容器，用来存放和导出扫描结果。"""
 
     def __init__(self, rows: List[dict]):
         self.rows = rows
@@ -54,6 +54,8 @@ def _make_frame(rows: List[dict]) -> DataFrameLike:
 
 
 def scan_combinations(n_samples: int = 200, seed: int | None = None) -> DataFrameLike:
+    """随机抽样组合，返回每个设计点的输入与代理输出。"""
+
     rng = random.Random(seed)
     rows = []
     for _ in range(n_samples):
@@ -75,6 +77,8 @@ def scan_combinations(n_samples: int = 200, seed: int | None = None) -> DataFram
 
 
 def _rank(data: List[float]) -> List[float]:
+    """为 Spearman 计算生成排名序列（处理并列值）。"""
+
     sorted_pairs = sorted((val, idx) for idx, val in enumerate(data))
     ranks = [0.0] * len(data)
     i = 0
@@ -92,6 +96,8 @@ def _rank(data: List[float]) -> List[float]:
 
 
 def _spearman_coeff(x: List[float], y: List[float]) -> float:
+    """计算 Spearman 相关系数（简化实现）。"""
+
     rx = _rank(x)
     ry = _rank(y)
     mean_x = sum(rx) / len(rx)
@@ -103,6 +109,8 @@ def _spearman_coeff(x: List[float], y: List[float]) -> float:
 
 
 def spearman_sensitivity(df: DataFrameLike, target: str, features: Iterable[str]):
+    """对指定目标与特征集合计算 Spearman 敏感性。"""
+
     rows = []
     target_vals = df[target]
     for feat in features:
@@ -112,6 +120,8 @@ def spearman_sensitivity(df: DataFrameLike, target: str, features: Iterable[str]
 
 
 def pareto_front(df: DataFrameLike, maximize: List[str], minimize: List[str]):
+    """根据多目标最大/最小化条件筛选 Pareto 前沿。"""
+
     values = [[row[c] for c in maximize + minimize] for row in df.rows]
     maximize_idx = list(range(len(maximize)))
     minimize_idx = list(range(len(maximize), len(maximize) + len(minimize)))

@@ -1,4 +1,4 @@
-"""Core data structures and design-point utilities for PTES studies."""
+"""PTES 设计点核心数据与代理计算函数（中文注释版）。"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -6,7 +6,7 @@ from typing import Dict, List, Tuple
 import math
 import random
 
-# Expanded working fluids and storage materials used in combination scans.
+# 组合扫描可用的工质与储热/储冷材料列表（可按需扩展）。
 WORKING_FLUIDS: List[str] = [
     "Air",
     "N2",
@@ -51,9 +51,9 @@ class DesignPointInputs:
     hot_storage: str
     cold_storage: str
     hx_type: str
-    rp: float  # compression ratio
-    eta_is: float  # isentropic efficiency
-    eps_regen: float  # recuperator effectiveness
+    rp: float  # 压缩比
+    eta_is: float  # 绝热效率（压缩机/透平）
+    eps_regen: float  # 回热器效率
     t_hot_max: float
     t_cold_min: float
 
@@ -81,6 +81,8 @@ class DesignPointResult:
 
 
 def _safety_factor(fluid: str, t_hot_max: float, t_cold_min: float) -> float:
+    """针对工质与温度窗口给出简化安全系数。"""
+
     heavy_penalty = {"Xe": 0.9, "Ar": 0.93, "CO2": 0.95}.get(fluid, 1.0)
     hot_window = max(0.0, min(1.0, (t_hot_max - 400.0) / 800.0))
     cold_window = max(0.0, min(1.0, (20.0 - t_cold_min) / 80.0))
@@ -88,6 +90,8 @@ def _safety_factor(fluid: str, t_hot_max: float, t_cold_min: float) -> float:
 
 
 def simulate_design_point_generic(inputs: DesignPointInputs) -> DesignPointResult:
+    """在给定输入下返回 RTE/LCOS/能量密度等“快速估算值”。"""
+
     rp_effect = math.log(max(1.01, inputs.rp)) / math.log(12.0)
     regen_boost = 0.4 * inputs.eps_regen + 0.6 * inputs.eta_is
     safety = _safety_factor(inputs.working_fluid, inputs.t_hot_max, inputs.t_cold_min)
@@ -121,6 +125,8 @@ def simulate_design_point_generic(inputs: DesignPointInputs) -> DesignPointResul
 
 
 def random_design_point(seed: int | None = None) -> Tuple[DesignPointInputs, DesignPointResult]:
+    """生成一组随机设计点与对应的代理计算结果，便于测试/扫描。"""
+
     rng = random.Random(seed)
     inputs = DesignPointInputs(
         working_fluid=rng.choice(WORKING_FLUIDS),

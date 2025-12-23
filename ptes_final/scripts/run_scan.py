@@ -1,3 +1,5 @@
+"""执行组合扫描、敏感性分析与 Pareto 前沿输出的示例脚本。"""
+
 import argparse
 import sys
 from pathlib import Path

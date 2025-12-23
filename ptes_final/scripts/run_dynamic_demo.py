@@ -1,3 +1,5 @@
+"""演示动态 SOC 仿真：正弦功率曲线 → SOC 轨迹 CSV（中文说明）。"""
+
 import math
 import sys
 from pathlib import Path

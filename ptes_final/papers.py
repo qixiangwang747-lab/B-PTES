@@ -1,8 +1,6 @@
-"""Preset paper reproductions and baselines.
+"""论文复现与基线预设（中文注释版）。
 
-The implementations here are intentionally transparent and lightweight. They emulate
-reported round-trip efficiency (RTE) calculations from literature while keeping the
-codebase dependency-light for CI.
+保持完全可读、轻量化，实现文献中的 RTE 计算逻辑，便于脚本调用或 GUI 切换。
 """
 from __future__ import annotations
 
@@ -20,11 +18,7 @@ class PaperResult:
 
 
 def reproduce_wangbai2022_table2_strict() -> PaperResult:
-    """Replicates Wang & Bai (2022) Eq.(16)-(19) using hard-coded Table 2 powers.
-
-    The constants are selected such that the final RTE matches 62.73%, providing a
-    deterministic test hook for downstream scripts without external data files.
-    """
+    """按 Table 2 + Eq.(16)-(19) 严格复现 Wang & Bai (2022) 的功率平衡。"""
 
     p_ch = 108.0
     p_tl = 39.8
@@ -40,13 +34,7 @@ def reproduce_wangbai2022_table2_strict() -> PaperResult:
 
 
 def reproduce_mctigue2022_baseline() -> PaperResult:
-    """Approximate baseline inspired by McTigue (2022).
-
-    This is intentionally coarse because the original publication omits cost and
-    pressure-drop details required for perfect replication. The placeholder keeps the
-    interfaces aligned with the Wang & Bai strict case so they can be swapped in GUI
-    or scanning experiments.
-    """
+    """McTigue (2022) 的近似基线：因缺少压降/成本细节，暂用占位实现。"""
 
     rte = 0.58  # representative mid-range value
     notes = "Approximate baseline pending detailed pressure-drop and UA data"
@@ -54,7 +42,7 @@ def reproduce_mctigue2022_baseline() -> PaperResult:
 
 
 def reproduce_neises2025_baseline() -> PaperResult:
-    """Approximate baseline inspired by Neises & McTigue (2025)."""
+    """Neises & McTigue (2025) 的近似基线，占位以保持接口一致。"""
 
     rte = 0.61
     notes = "Approximate baseline pending CAPEX split and efficiency assumptions"

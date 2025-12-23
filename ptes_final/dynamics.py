@@ -1,4 +1,4 @@
-"""0D dynamic PTES surrogate for dispatch studies."""
+"""零维 PTES 动态代理：用于调度/调峰策略的快速评估。"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -21,6 +21,8 @@ class PTESDynamicSimulator:
         self.cfg = config
 
     def simulate(self, power_profile_kw: List[float], timestep_s: float = 60.0) -> Tuple[List[float], List[float]]:
+        """给定功率序列返回功率轨迹与 SOC 轨迹（简单能量守恒+热损）。"""
+
         soc = 0.5
         soc_trace: List[float] = []
         power_trace: List[float] = []

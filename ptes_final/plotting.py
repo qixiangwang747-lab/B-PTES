@@ -1,6 +1,6 @@
-"""Plotting helpers for PTES studies.
+"""PTES 绘图小工具：Pareto、敏感性、理想气体 T-s 图。
 
-Matplotlib is optional; if unavailable the functions emit a message and return None.
+Matplotlib 不是硬依赖；若未安装会打印提示并直接返回 None。
 """
 from __future__ import annotations
 
