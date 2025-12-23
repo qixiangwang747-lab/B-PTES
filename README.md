@@ -14,14 +14,67 @@
   - `run_scan.py`：执行组合扫描、Spearman 敏感性、Pareto 前沿，输出 CSV/PNG。
   - `run_dynamic_demo.py`：给定正弦功率曲线生成 SOC 轨迹，输出 CSV。
 
-## 快速开始
+## 运行教程（从零开始的全流程）
 
-在仓库根目录运行以下示例脚本即可：
+### 1. 环境准备
+
+- 需要 Python ≥3.8，完全使用标准库，无需额外依赖；系统自带 python3 即可运行。
+- 建议在仓库根目录下操作，输出文件会直接写到当前工作目录。
+
+### 2. 获取代码
+
+```bash
+git clone <本仓库地址>
+cd B-PTES
+```
+
+### 3. 运行论文复现基准
 
 ```bash
 python ptes_final/scripts/run_benchmarks.py
-python ptes_final/scripts/run_scan.py --n 50 --seed 1
+```
+
+输出：
+
+- `benchmark_results.txt`：文本汇总 Wang & Bai 2022 严格复现的 RTE=0.6273，以及 McTigue 2022、Neises & McTigue 2025 的近似基线结果。
+- 终端同步打印同样内容，便于快速查看。
+
+### 4. 执行组合扫描 + 敏感性 + Pareto
+
+```bash
+python ptes_final/scripts/run_scan.py --n 200 --seed 1
+```
+
+参数说明：
+
+- `--n`：抽样组合数量（默认 100，可根据时间与精度调整）。
+- `--seed`：随机种子，保证可复现。
+
+输出文件（均在当前目录）：
+
+- `scan_results.csv`：原始组合与指标。
+- `scan_results_with_pareto.csv`：标记 Pareto 前沿的结果。
+- 若已安装 matplotlib：
+  - `pareto_scatter.png/.pdf`：RTE–LCOS–能量密度散点图。
+  - `sensitivity_RTE.png/.pdf`：RTE 对关键参数的 Spearman 敏感性条形图。
+- 若未安装 matplotlib，脚本会提示并跳过绘图，但 CSV 仍正常生成。
+
+### 5. 运行零维动态调峰示例
+
+```bash
 python ptes_final/scripts/run_dynamic_demo.py
 ```
 
-每个脚本会在当前工作目录写出结果（文本、CSV、若安装 matplotlib 则额外生成 PNG）。无需安装任何额外 Python 第三方库。
+输出：
+
+- `dynamic_demo.csv`：时间序列的 SOC、功率、热/冷储能状态。
+- 若安装 matplotlib：`dynamic_soc.png/.pdf` 展示 SOC 轨迹。
+
+### 6. 自定义/二次开发提示
+
+- 想快速查看模块接口，可打开各文件顶部中文注释/文档串。
+- 若要集成到 GUI 或优化：
+  - 调用 `core.simulate_design_point_generic` 进行单点评估。
+  - 使用 `analysis_tools.scan_combinations` 生成训练数据，再通过代理模型实现秒级预测。
+  - 用 `dynamics.PTESDynamicSimulator` 作为强化学习或 MPC 环境的核心能量平衡模块。
+- 默认所有脚本无依赖，可在任何无网环境运行；若需绘图，只需额外 `pip install matplotlib`。
