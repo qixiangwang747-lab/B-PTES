@@ -42,6 +42,7 @@ python ptes_final/scripts/run_benchmarks.py
 
 - `benchmark_results.txt`：文本汇总 Wang & Bai 2022 严格复现的 RTE=0.6273，以及 McTigue 2022、Neises & McTigue 2025 的近似基线结果。
 - 终端同步打印同样内容，便于快速查看。
+- 脚本内置“健康检查”断言：若 RTE 与基准值有任何偏差，会直接报错，帮助确认机理模型没有被意外改动。
 
 ### 4. 执行组合扫描 + 敏感性 + Pareto
 
