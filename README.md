@@ -63,6 +63,33 @@ python ptes_final/scripts/run_scan.py --n 200 --seed 1
   - `sensitivity_RTE.png/.pdf`：RTE 对关键参数的 Spearman 敏感性条形图。
 - 若未安装 matplotlib，脚本会提示并跳过绘图，但 CSV 仍正常生成。
 
+#### 查看抽样分布（无第三方依赖）
+
+运行完 `run_scan.py` 后，可用标准库快速浏览抽样的参数分布，例如统计各工质/储热材料的出现频次：
+
+```bash
+python - <<'PY'
+import csv
+from collections import Counter
+
+with open('scan_results.csv', newline='') as f:
+    reader = csv.DictReader(f)
+    fluids = Counter()
+    hot = Counter()
+    cold = Counter()
+    for row in reader:
+        fluids[row['working_fluid']] += 1
+        hot[row['hot_storage']] += 1
+        cold[row['cold_storage']] += 1
+
+print('工质分布:', fluids)
+print('储热材料分布:', hot)
+print('储冷材料分布:', cold)
+PY
+```
+
+上述命令仅依赖标准库，便于验证抽样是否覆盖预期组合；也可用同样方法对 `scan_results_with_pareto.csv` 做筛选统计。
+
 ### 5. 运行零维动态调峰示例
 
 ```bash
